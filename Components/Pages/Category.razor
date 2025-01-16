@@ -1,0 +1,47 @@
+﻿@page "/Category"
+@inject IProductService ProductService
+@inject NavigationManager Navigation
+
+<h3>Product List</h3>
+
+<div class="row">
+    @if (products != null && products.Any())
+    {
+        foreach (var product in products)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@product.Image" class="card-img-top" alt="@product.Name" />
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="javascript:void(0)" @onclick="() => NavigateToProductDetails(product.PID)">
+                                @product.Name
+                            </a>
+                        </h5>
+                        <p class="card-text">Price: @product.Price.ToString("C")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No products available.</p>
+    }
+</div>
+
+@code {
+    private IEnumerable<ProductOutputDto> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch all products on initialization
+        products = await Task.Run(() => ProductService.GetAllProducts(1, 20)); // Fetch first page with 20 products
+    }
+
+    private void NavigateToProductDetails(int productId)
+    {
+        // Navigate to the product details page
+        Navigation.NavigateTo($"/product-details/{productId}");
+    }
+}
