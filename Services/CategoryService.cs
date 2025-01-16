@@ -1,4 +1,5 @@
 ﻿using AmazonSimulatorApp.Data;
+using AmazonSimulatorApp.Data.DTOs;
 using AmazonSimulatorApp.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,18 @@ namespace AmazonSimulatorApp.Services
         }
 
 
-        public IEnumerable<Category> GetAllCategories()
+        public IEnumerable<CategoryOutputDto> GetAllCategories()
         {
             try
             {
-                return _categoryRepo.GetAllCategories();
+                var categories = _categoryRepo.GetAllCategories();
+                return categories.Select(category => new CategoryOutputDto
+                {
+                    CatID = category.CatID,
+                    Name = category.Name,
+                    Count = category.Count,
+                    ProductNames = category.Products?.Select(p => p.Name) ?? new List<string>()
+                }).ToList();
             }
             catch (Exception ex)
             {
@@ -28,35 +36,55 @@ namespace AmazonSimulatorApp.Services
         }
 
 
-        public Category GetCategoryById(int cid)
+        public CategoryOutputDto GetCategoryById(int cid)
         {
             var category = _categoryRepo.GetCategoryById(cid);
             if (category == null)
                 throw new KeyNotFoundException($"Category with ID {cid} not found.");
-            return category;
+            return new CategoryOutputDto
+            {
+                CatID = category.CatID,
+                Name = category.Name,
+                Count = category.Count,
+                ProductNames = category.Products?.Select(p => p.Name) ?? new List<string>()
+            };
         }
-        public void AddCategory(Category category)
+        public void AddCategory(CategoryInputDto categoryDto)
         {
+            var category = new Category
+            {
+                Name = categoryDto.Name,
+                Count = categoryDto.Count
+            };
             _categoryRepo.AddCategory(category);
         }
 
-        public void UpdateProduct(Category category)
+        public void UpdateProduct(int categoryId, CategoryInputDto categoryDto)
         {
 
-            var existingcate = _categoryRepo.GetCategoryById(category.CatID);
-            if (existingcate == null)
-                throw new KeyNotFoundException($"Category with ID {category.CatID} not found.");
+            var existingCategory = _categoryRepo.GetCategoryById(categoryId);
+            if (existingCategory == null)
+                throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
 
-            _categoryRepo.UpdateCategory(category);
+            existingCategory.Name = categoryDto.Name;
+            existingCategory.Count = categoryDto.Count;
+
+            _categoryRepo.UpdateCategory(existingCategory);
         }
 
-        public Category GetCategoryByName(string name)
+        public CategoryOutputDto GetCategoryByName(string name)
         {
 
             var category = _categoryRepo.GetCategoryByName(name);
             if (category == null)
                 throw new KeyNotFoundException($"Category with Nmae {name} not found.");
-            return category;
+            return new CategoryOutputDto
+            {
+                CatID = category.CatID,
+                Name = category.Name,
+                Count = category.Count,
+                ProductNames = category.Products?.Select(p => p.Name) ?? new List<string>()
+            };
         }
         public void RemoveCategory(int ID)
         {
