@@ -70,5 +70,23 @@
             }
 
         }
+
+        public void DeleteProduct(int id)
+        {
+            try
+            {
+                var product = _context.Products.FirstOrDefault(p => p.PID == id);
+                if (product != null)
+                {
+                    _context.Products.Remove(product);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Database error: {ex.Message}");
+            }
+
+        }
     }
 }
