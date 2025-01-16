@@ -1,4 +1,6 @@
 using AmazonSimulatorApp.Components;
+using AmazonSimulatorApp.Data.Repositories;
+using AmazonSimulatorApp.Services;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 
@@ -18,6 +20,11 @@ namespace AmazonSimulatorApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 
                 );
+
+            builder.Services.AddScoped<IUserRepo, UserRepo>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IClinetRepo, ClinetRepo>();
+            builder.Services.AddScoped<IClinetService, ClinetService>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
