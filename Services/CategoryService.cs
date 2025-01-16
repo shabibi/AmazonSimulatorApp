@@ -1,5 +1,6 @@
 ﻿using AmazonSimulatorApp.Data;
 using AmazonSimulatorApp.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmazonSimulatorApp.Services
 {
@@ -13,7 +14,20 @@ namespace AmazonSimulatorApp.Services
 
         }
 
-        //getall////
+
+        public IEnumerable<Category> GetAllCategories()
+        {
+            try
+            {
+                return _categoryRepo.GetAllCategories();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving categories: {ex.Message}");
+            }
+        }
+
+
         public Category GetCategoryById(int cid)
         {
             var category = _categoryRepo.GetCategoryById(cid);
