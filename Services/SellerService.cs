@@ -5,8 +5,8 @@ namespace AmazonSimulatorApp.Services
 {
     public class SellerService : ISellerService
     {
-        public SellerRepo _sellerRepo;
-        public SellerService(SellerRepo sellerRepo)
+        public ISellerRepo _sellerRepo;
+        public SellerService(ISellerRepo sellerRepo)
         {
             _sellerRepo = sellerRepo;
         }
