@@ -9,5 +9,6 @@ namespace AmazonSimulatorApp.Services
         Product GetProductById(int pid);
         Product GetProductByName(string productName);
         void UpdateProduct(Product product);
+        void RemoveProduct(int ID);
     }
 }

@@ -73,6 +73,17 @@ namespace AmazonSimulatorApp.Services
                 throw new KeyNotFoundException($"Product with Nmae {productName} not found.");
             return product;
         }
+        public void RemoveProduct(int ID)
+        {
+            var product = _productRepo.GetProductById(ID);
+            if (product == null)
+            {
+                throw new Exception("product not found.");
+            }
+
+            _productRepo.DeleteProduct(ID);
+        }
+
 
     }
 }

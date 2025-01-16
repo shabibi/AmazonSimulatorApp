@@ -1,18 +1,19 @@
 ﻿namespace AmazonSimulatorApp.Data.Repositories
 {
-    public class ProductRepo : IProductRepo
+    public class SellerRepo : ISellerRepo
     {
         public ApplicationDbContext _context;
-        public ProductRepo(ApplicationDbContext context)
+        public SellerRepo(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<Product> GetAllProducts()
+
+        public IEnumerable<Seller> GetAllSellers()
         {
             try
             {
-                return _context.Products.ToList();
+                return _context.Sellers.ToList();
             }
             catch (Exception ex)
             {
@@ -20,11 +21,12 @@
             }
         }
 
-        public Product GetProductById(int pid)
+
+        public Seller GetSellerById(int sid)
         {
             try
             {
-                return _context.Products.FirstOrDefault(p => p.PID == pid);
+                return _context.Sellers.FirstOrDefault(u => u.SID == sid);
             }
             catch (Exception ex)
             {
@@ -32,11 +34,11 @@
             }
         }
 
-        public void AddProduct(Product product)
+        public void AddSeller(Seller seller)
         {
             try
             {
-                _context.Products.Add(product);
+                _context.Sellers.Add(seller);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -45,11 +47,13 @@
             }
         }
 
-        public void UpdateProduct(Product product)
+
+        public void UpdateSeller(Seller seller)
         {
             try
             {
-                _context.Products.Update(product);
+
+                _context.Sellers.Update(seller);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -58,27 +62,15 @@
             }
         }
 
-        public Product GetProductByName(string productName)
+
+        public void DeleteSeller(int sid)
         {
             try
             {
-                return _context.Products.FirstOrDefault(p => p.Name == productName);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Database error: {ex.Message}");
-            }
-
-        }
-
-        public void DeleteProduct(int id)
-        {
-            try
-            {
-                var product = _context.Products.FirstOrDefault(p => p.PID == id);
-                if (product != null)
+                var seller = GetSellerById(sid);
+                if (seller != null)
                 {
-                    _context.Products.Remove(product);
+                    _context.Sellers.Remove(seller);
                     _context.SaveChanges();
                 }
             }
@@ -86,7 +78,7 @@
             {
                 throw new InvalidOperationException($"Database error: {ex.Message}");
             }
-
         }
+
     }
 }

@@ -1,18 +1,18 @@
 ﻿namespace AmazonSimulatorApp.Data.Repositories
 {
-    public class ProductRepo : IProductRepo
+    public class CategoryRepo : ICategoryRepo
     {
         public ApplicationDbContext _context;
-        public ProductRepo(ApplicationDbContext context)
+        public CategoryRepo(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public IEnumerable<Category> GetAllCategories()
         {
             try
             {
-                return _context.Products.ToList();
+                return _context.Categories.ToList();
             }
             catch (Exception ex)
             {
@@ -20,11 +20,11 @@
             }
         }
 
-        public Product GetProductById(int pid)
+        public Category GetCategoryById(int Cid)
         {
             try
             {
-                return _context.Products.FirstOrDefault(p => p.PID == pid);
+                return _context.Categories.FirstOrDefault(c => c.CatID == Cid);
             }
             catch (Exception ex)
             {
@@ -32,11 +32,11 @@
             }
         }
 
-        public void AddProduct(Product product)
+        public void AddCategory(Category category)
         {
             try
             {
-                _context.Products.Add(product);
+                _context.Categories.Add(category);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -45,11 +45,11 @@
             }
         }
 
-        public void UpdateProduct(Product product)
+        public void UpdateCategory(Category category)
         {
             try
             {
-                _context.Products.Update(product);
+                _context.Categories.Update(category);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -58,11 +58,11 @@
             }
         }
 
-        public Product GetProductByName(string productName)
+        public Category GetCategoryByName(string CateName)
         {
             try
             {
-                return _context.Products.FirstOrDefault(p => p.Name == productName);
+                return _context.Categories.FirstOrDefault(c => c.Name == CateName);
             }
             catch (Exception ex)
             {
@@ -71,14 +71,14 @@
 
         }
 
-        public void DeleteProduct(int id)
+        public void DeleteCategory(int id)
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.PID == id);
-                if (product != null)
+                var category = _context.Categories.FirstOrDefault(c => c.CatID == id);
+                if (category != null)
                 {
-                    _context.Products.Remove(product);
+                    _context.Categories.Remove(category);
                     _context.SaveChanges();
                 }
             }

@@ -8,5 +8,6 @@ namespace AmazonSimulatorApp.Data.Repositories
         Product GetProductById(int pid);
         Product GetProductByName(string productName);
         void UpdateProduct(Product product);
+        void DeleteProduct(int id);
     }
 }
