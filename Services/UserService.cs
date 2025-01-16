@@ -12,9 +12,22 @@ namespace AmazonSimulatorApp.Services
             _userRepo = userRepo;
         }
 
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            _userRepo.AddUser(user);
+            // Check if email already exists
+            var existingUser = await _userRepo.GetUserByEmailAsync(user.Email);
+            if (existingUser != null)
+                throw new InvalidOperationException("A user with this email already exists.");
+
+            // Hash the password
+            user.Password = HashingPassword.Hshing(user.Password);
+
+            // Set default values
+            user.IsVerified = false;
+            user.IsActive = true;
+
+            // Save user
+            await _userRepo.AddUserAsync(user);
         }
         public void DeleteUser(int uid)
         {

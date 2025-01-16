@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@inject NavigationManager Navigation
 @* Required *@
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -19,7 +19,9 @@
         <!-- Sign-In and Sign-Out Buttons -->
         <div style="display: flex; gap: 8px;">
             <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="SignIn">Sign In</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="SignOut">Sign Up</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => Navigation.NavigateTo("/signup"))">
+                Sign Up
+            </MudButton>
         </div>
     </div>
 
