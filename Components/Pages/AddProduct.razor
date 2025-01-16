@@ -5,7 +5,75 @@
 @inject IProductService ProductService
 @inject NavigationManager Navigation
 
-
-
 <PageTitle>Products</PageTitle>
+
+<EditForm Model="newProduct" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="productName">Product Name</label>
+        <InputText id="productName" class="form-control" @bind-Value="newProduct.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="productPrice">Price</label>
+        <InputNumber id="productPrice" class="form-control" @bind-Value="newProduct.Price" />
+    </div>
+
+    <div class="mb-3">
+        <label for="productStok">Stock</label>
+        <InputNumber id="productStok" class="form-control" @bind-Value="newProduct.Stock" />
+    </div>
+
+    <div class="mb-3">
+        <label for="productImg">Image</label>
+        <input type="file" id="productImg" class="form-control" @onchange="HandleFileSelected" />
+    </div>
+
+
+    <div class="mb-3">
+        <label for="productDescription">Description</label>
+        <InputTextArea id="productDescription" class="form-control" @bind-Value="newProduct.Description" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Product</button>
+</EditForm>
+
+@code {
+    private ProductInputDto newProduct = new ProductInputDto();
+
+    private void HandleValidSubmit()
+    {
+        try
+        {
+            // Call ProductService to add product synchronously
+            ProductService.AddProduct(newProduct);
+
+            // Optionally redirect or show success message
+            Navigation.NavigateTo("/products");
+        }
+        catch (Exception ex)
+        {
+            // Handle error, e.g., display error message
+            Console.WriteLine($"Error adding product: {ex.Message}");
+        }
+    }
+    private IBrowserFile selectedFile;
+
+    // This method handles the file selection
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        var file = (IBrowserFile)e.Value; // Get the selected file
+        if (file != null)
+        {
+            selectedFile = file; // Store it in a variable
+                                 
+        }
+    }
+   
+
+
+
+}
 
