@@ -33,6 +33,8 @@ namespace AmazonSimulatorApp
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ISellerRepo, SellerRepo>();
             builder.Services.AddScoped<ISellerService, SellerService>();
+            builder.Services.AddScoped<IProductRepo, ProductRepo>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
