@@ -1,4 +1,6 @@
-﻿namespace AmazonSimulatorApp.Data.Repositories
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace AmazonSimulatorApp.Data.Repositories
 {
     public class UserRepo : IUserRepo
     {
@@ -34,19 +36,15 @@
             }
         }
         //Add new user
-        public void AddUser(User user)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            try
-            {
-                //Hash the password before saving
-                user.Password = HashingPassword.Hshing(user.Password);
-                _context.Users.Add(user);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Database error: {ex.Message}");
-            }
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task AddUserAsync(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
 
         //Update User 

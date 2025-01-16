@@ -1,0 +1,113 @@
+﻿@page "/signup"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@inject IUserService userService
+@inject ISnackbar Snackbar
+
+<h3>Sign Up</h3>
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!"
+                              @bind-Value="newUser.Name" />
+                <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                              Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })"
+                              @bind-Value="newUser.Email" />
+                <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
+                              InputType="InputType.Password"
+                              Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                              RequiredError="Password is required!" @bind-Value="newUser.Password" />
+                <MudTextField T="string"
+                              Label="Repeat Password" HelperText="Repeat the password" InputType="InputType.Password"
+                              Validation="@(new Func<string, string>(PasswordMatch))" />
+
+                <!-- Role Selection -->
+                <MudCheckBox T="bool" Label="Client" @bind-Checked="isClient" />
+                <MudCheckBox T="bool" Label="Seller" @bind-Checked="isSeller" />
+                <MudText Color="@Color.Error" Typo="Typo.caption">@roleError</MudText>
+
+                <div class="d-flex align-center justify-space-between">
+                    <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" OnClick="RegisterUser" Class="ml-auto">
+                        Register
+                    </MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private User newUser = new User();
+    private bool success;
+    private string[] errors = { };
+    private MudTextField<string> pwField1;
+    private MudForm form;
+
+    // Role selection state
+    private bool isClient = false;
+    private bool isSeller = false;
+    private string roleError = "";
+
+    private async Task RegisterUser()
+    {
+        roleError = ""; // Reset error message
+
+        // Validate role selection
+        // Validate role selection
+        if (isClient && isSeller)
+        {
+            roleError = "You must select only one role: Client or Seller.";
+            return;
+        }
+
+        // Assign role based on checkbox selection
+        newUser.Role = !isClient ? "Client" : "Seller";
+
+        // Validate form
+        await form.Validate();
+        if (form.IsValid)
+        {
+            try
+            {
+                // Call the service to add the user
+                await userService.AddUser(newUser);
+
+                // Show success message
+                Snackbar.Add("Registration successful!", Severity.Success);
+
+               
+            }
+            catch (Exception ex)
+            {
+                errors = new string[] { ex.Message }; // Display error to the user
+                Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least 8 characters long.";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one uppercase letter.";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter.";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one number.";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Passwords don't match!";
+        return null;
+    }
+}
