@@ -1,0 +1,38 @@
+﻿@page "/signout"
+@inject ICurrentUserService currentUserService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<h3>Sign Out</h3>
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5">You have successfully signed out.</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SigningOut" Class="mt-4">
+                Go to Home
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private void SigningOut()
+    {
+        try
+        {
+            // Clear the current user data
+            currentUserService.SetCurrentUser(null); // Or use a method to clear the session
+
+            // Redirect to the login page
+            NavigationManager.NavigateTo("/");
+
+            // Show a snackbar or message
+            Snackbar.Add("You have signed out successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"An error occurred during sign out: {ex.Message}", Severity.Error);
+        }
+    }
+}
