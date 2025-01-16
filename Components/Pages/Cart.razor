@@ -1,0 +1,91 @@
+﻿@page "/cart"
+
+<PageTitle>Shopping Cart</PageTitle>
+
+<h1>Shopping Cart</h1>
+
+
+@if (cartItems == null || !cartItems.Any())
+{
+    <p><em>Your cart is empty.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in cartItems)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>
+                        <input type="number" min="1" @bind="item.Quantity" @bind:event="oninput" style="width: 60px;" />
+                    </td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@((item.Price * item.Quantity).ToString("C"))</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => RemoveItem(item.ProductName)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total: @cartItems.Sum(i => i.Quantity * i.Price).ToString("C")</h3>
+
+    <button class="btn btn-primary" @onclick="PlaceOrder">Place Order</button>
+}
+
+@code {
+    private List<CartItem>? cartItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate loading cart items
+        await Task.Delay(500); // Simulate async operation
+
+        cartItems = new List<CartItem>
+        {
+            new CartItem { ProductName = "Laptop", Quantity = 1, Price = 999.99m },
+            new CartItem { ProductName = "Mouse", Quantity = 2, Price = 25.50m }
+        };
+    }
+
+    private void RemoveItem(string productName)
+    {
+        var item = cartItems?.FirstOrDefault(i => i.ProductName == productName);
+        if (item != null)
+        {
+            cartItems.Remove(item);
+        }
+    }
+
+    private void PlaceOrder()
+    {
+        if (cartItems == null || !cartItems.Any())
+        {
+            // Handle empty cart scenario
+            Console.WriteLine("Your cart is empty!");
+            return;
+        }
+
+        // Simulate order placement logic
+        Console.WriteLine("Order placed successfully!");
+        cartItems.Clear(); // Clear the cart after placing the order
+    }
+
+    private class CartItem
+    {
+        public string ProductName { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+    }
+}
