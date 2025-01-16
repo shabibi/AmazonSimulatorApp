@@ -2,7 +2,7 @@
 {
     public class ClinetRepo : IClinetRepo
     {
-        public ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         public ClinetRepo(ApplicationDbContext context)
         {
             _context = context;
