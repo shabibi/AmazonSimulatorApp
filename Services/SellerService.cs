@@ -5,7 +5,7 @@ namespace AmazonSimulatorApp.Services
 {
     public class SellerService : ISellerService
     {
-        private readonly ISellerRepo _sellerRepo;
+        public ISellerRepo _sellerRepo;
         public SellerService(ISellerRepo sellerRepo)
         {
             _sellerRepo = sellerRepo;

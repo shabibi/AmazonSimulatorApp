@@ -5,7 +5,7 @@ namespace AmazonSimulatorApp.Services
 {
     public class ClinetService : IClinetService
     {
-        private readonly IClinetRepo _clinetRepo;
+        public IClinetRepo _clinetRepo;
         public ClinetService(IClinetRepo clinetRepo)
         {
             _clinetRepo = clinetRepo;

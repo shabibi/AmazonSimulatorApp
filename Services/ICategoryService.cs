@@ -1,14 +1,17 @@
 ﻿using AmazonSimulatorApp.Data;
+using AmazonSimulatorApp.Data.DTOs;
 
 namespace AmazonSimulatorApp.Services
 {
     public interface ICategoryService
     {
-        IEnumerable<Category> GetAllCategories();
-        void AddCategory(Category category);
-        Category GetCategoryById(int cid);
-        Category GetCategoryByName(string name);
+        IEnumerable<CategoryOutputDto> GetAllCategories();
+        void AddCategory(CategoryInputDto categoryDto);
+        CategoryOutputDto GetCategoryById(int cid);
+
+
+        CategoryOutputDto GetCategoryByName(string name);
         void RemoveCategory(int ID);
-        void UpdateProduct(Category category);
+        void UpdateProduct(int categoryId, CategoryInputDto categoryDto);
     }
 }
