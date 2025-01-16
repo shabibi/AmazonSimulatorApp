@@ -18,7 +18,7 @@
 
         <!-- Sign-In and Sign-Out Buttons -->
         <div style="display: flex; gap: 8px;">
-            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="SignIn">Sign In</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("/signin"))">Sign In</MudButton>
             <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => Navigation.NavigateTo("/signup"))">
                 Sign Up
             </MudButton>

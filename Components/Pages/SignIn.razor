@@ -1,0 +1,80 @@
+﻿@page "/signin"
+@using System.ComponentModel.DataAnnotations
+@inject IUserService userService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject ICurrentUserService currentUserService 
+<h3>Sign In</h3>
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField T="string" Label="Username" Required="true" RequiredError="Username is required!"
+                              @bind-Value="username" />
+                <MudTextField T="string" Label="Password" HelperText="Enter your password" InputType="InputType.Password"
+                              Required="true" RequiredError="Password is required!"
+                              @bind-Value="password" />
+                <div class="d-flex align-center justify-space-between">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               Disabled="@(form != null && !form.IsValid)" OnClick="SignInUser" Class="ml-auto">
+                        Sign In
+                    </MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string username;
+    private string password;
+    private bool rememberMe = false;
+    private bool success;
+    private string[] errors = { };
+    private MudForm form;
+
+    private async Task SignInUser()
+    {
+        errors = Array.Empty<string>(); // Reset previous errors
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            errors = new[] { "Username and Password cannot be empty." };
+            return;
+        }
+
+        try
+        {
+            // Call the service to validate user credentials
+            var user =  userService.GetUSer(username, password); // Use username here
+            if (user != null)
+            {
+                // Create a CurrentUser object to store logged-in user details
+                var currentUser = new CurrentUser
+                {
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                // Store current user data in a service or session (for example, using a service)
+                currentUserService.SetCurrentUser(currentUser);
+
+                // Redirect to a dashboard or home page after successful login
+                NavigationManager.NavigateTo("/"); // Or any page after login
+
+                Snackbar.Add("Login successful!", Severity.Success);
+            }
+            else
+            {
+                errors = new[] { "Invalid username or password." };
+            }
+        }
+        catch (Exception ex)
+        {
+            errors = new[] { ex.Message }; // Display error to the user
+            Snackbar.Add($"An error occurred: {ex.Message}", Severity.Error);
+        }
+    }
+}
